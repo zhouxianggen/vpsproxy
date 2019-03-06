@@ -14,3 +14,7 @@ DIAL_CMD = '/usr/bin/sh %s/bohao.sh' % CWD
 
 # 运行日志存放路径
 LOG_PATH = '%s/log/service.log' % CWD
+
+# 远端版本
+REMOTE_VERSION = 'https://github.com/zhouxianggen/vpsproxy/blob/master/vpsproxy/.version'
+

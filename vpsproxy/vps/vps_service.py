@@ -148,7 +148,7 @@ class DialWorker(Worker):
 
 class VpsService(LogObject):
     def __init__(self, request_workers_num=20, post_response_workers_num=20):
-        LogObject.__init__(self)
+        LogObject.__init__(self, log_path=vps_config.LOG_PATH)
         self.version = vps_utils.get_deploy_version()
         self.request_queue = Queue()
         self.response_queue = Queue()

@@ -21,3 +21,15 @@ echo 'name' > .name
 */1 * * * * cd /root/vpp && python vps_service.py >service.log 2>&1
 ```
 
+4. 拨号配置
+```
+参考VPS提供商的文档
+```
+
+5. 配置VPS自动重启
+```
+```
+
+6. 配置环境变量
+```
+```

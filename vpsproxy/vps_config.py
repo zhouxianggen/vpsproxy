@@ -16,5 +16,6 @@ DIAL_CMD = '/usr/bin/sh %s/bohao.sh' % CWD
 LOG_PATH = '%s/log/service.log' % CWD
 
 # 远端版本
-REMOTE_VERSION = 'https://github.com/zhouxianggen/vpsproxy/blob/master/vpsproxy/.version'
+REMOTE_VERSION = 'https://raw.githubusercontent.com/zhouxianggen/vpsproxy/master/vpsproxy/.version'
+DEPLOY_SCIRPT = 'https://raw.githubusercontent.com/zhouxianggen/vpsproxy/master/vpsproxy/deploy.sh'
 

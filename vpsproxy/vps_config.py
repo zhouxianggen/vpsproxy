@@ -10,7 +10,7 @@ BROKER_URI_OF_POST_RESPONSE = 'http://114.55.31.211:8002/vps/post_response'
 BROKER_URI_OF_POST_STATUS = 'http://114.55.31.211:8002/vps/post_status'
 
 # 拨号命令
-DIAL_CMD = '/usr/bin/sh /usr/local/bin/bohao.sh'
+DIAL_CMD = '/usr/bin/sh %s/bohao.sh' % CWD
 
 # 运行日志存放路径
-LOG_PATH = ''
+LOG_PATH = '%s/log/service.log' % CWD

@@ -32,15 +32,3 @@ def get_deploy_version():
     return int(content) if content.isdigit() else 0
 
 
-def is_network_availble():
-    hosts = [
-            'www.baidu.com', 
-            'www.gov.cn']
-    for host in hosts:
-        try:
-            socket.create_connection((host, 80))
-            return True
-        except Exception as e:
-            continue
-    return False
-

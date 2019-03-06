@@ -23,9 +23,9 @@ class Context(PyObject):
     def init(self, config):
         cfg = configparser.ConfigParser()
         cfg.read(config)
-        host=cfg.get('redis', 'host'), 
-        port=cfg.get('redis', 'prot'), 
-        pswd=cfg.get('redis', 'pswd'), 
+        host = cfg.get('redis', 'host') 
+        port = cfg.get('redis', 'port') 
+        pswd = cfg.get('redis', 'pswd') 
         
         self.request_cache = PyRedis(host=host, port=port, 
                 pswd=pswd, db=4, version='broker-')

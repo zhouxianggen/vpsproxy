@@ -8,7 +8,7 @@
 import time
 import json
 import argparse
-import asyncio
+import configparser
 from datetime import datetime
 from threading import Thread
 from queue import Queue, Empty, Full
@@ -16,8 +16,23 @@ import requests
 import tornado.ioloop
 import tornado.web
 from pyobject import PyObject
-from pyresource import REDIS_CRAWLER as REDIS 
 from pyredis import PyRedis
+
+
+class Context(PyObject):
+    def init(self, config):
+        cfg = configparser.ConfigParser()
+        cfg.read(config)
+        host=cfg.get('redis', 'host'), 
+        port=cfg.get('redis', 'prot'), 
+        pswd=cfg.get('redis', 'pswd'), 
+        
+        self.request_cache = PyRedis(host=host, port=port, 
+                pswd=pswd, db=4, version='broker-')
+        self.vps_status_cache = PyRedis(host=host, port=port, 
+                pswd=pswd, db=5, version='vps-')
+        self.vps_ip_pool = PyRedis(host=host, port=port, 
+                pswd=pswd, db=5, version='ips-')
 
 
 class RequestBroker(Thread, PyObject):
@@ -26,28 +41,31 @@ class RequestBroker(Thread, PyObject):
     def __init__(self):
         Thread.__init__(self)
         PyObject.__init__(self)
-        self.daemon = True
-        self.cache = PyRedis(host=REDIS.host, port=REDIS.port, 
-                pswd=REDIS.pswd, db=5, version='broker-')
         self.REQUEST_QUEUE = 'BROKER_REQUEST_QUEUE'
         self.MAX_REQ_QUEUE_SIZE = 500
         self.response_queue = Queue()
         self.MAX_RESP_QUEUE_SIZE = 100
+        self.daemon = True
+
 
     def push_request(self, request):
-        self.cache.lpush(self.REQUEST_QUEUE, request)
-        if self.cache.llen(self.REQUEST_QUEUE) > self.MAX_REQ_QUEUE_SIZE:
+        g_ctx.request_cache.lpush(self.REQUEST_QUEUE, request)
+        if g_ctx.request_cache.llen(
+                self.REQUEST_QUEUE) > self.MAX_REQ_QUEUE_SIZE:
             self.log.warning('request queue is busy')
-            self.cache.rpop(self.REQUEST_QUEUE)
+            g_ctx.request_cache.rpop(self.REQUEST_QUEUE)
+
 
     def get_request(self):
-        return self.cache.rpop(self.REQUEST_QUEUE)
+        return g_ctx.request_cache.rpop(self.REQUEST_QUEUE)
+
 
     def push_response(self, response):
         if self.response_queue.qsize() > self.MAX_RESP_QUEUE_SIZE:
             self.log.warning('response queue if busy')
             return
         self.response_queue.put(response)
+
 
     def run(self):
         self.log.info('start')
@@ -64,7 +82,7 @@ class RequestBroker(Thread, PyObject):
 
 """ global data """
 g_broker = RequestBroker()
-g_broker.start()
+g_ctx = Context()
 
 
 class BaseRequestHandler(PyObject, tornado.web.RequestHandler):
@@ -109,22 +127,14 @@ class VpsPostResponseHandler(BaseRequestHandler):
 class VpsPostStatusHandler(BaseRequestHandler):
     """ 处理vps汇报的状态
     """
-    def __init__(self, *args, **kwargs):
-        BaseRequestHandler.__init__(self, *args, **kwargs)
-        self.vps_status_cache = PyRedis(host=REDIS.host, port=REDIS.port, 
-                pswd=REDIS.pswd, db=5, version='vps-')
-        self.vps_ip_pool = PyRedis(host=REDIS.host, port=REDIS.port, 
-                pswd=REDIS.pswd, db=5, version='ips-')
-
-
     def update(self, vps, status):
-        self.vps_status_cache.delete(vps)
+        g_ctx.vps_status_cache.delete(vps)
         for k,v in status.items():
-            self.vps_status_cache.hset(vps, k, v)
-        self.vps_status_cache.hset(vps, 'update_time', time.time())
+            g_ctx.vps_status_cache.hset(vps, k, v)
+        g_ctx.vps_status_cache.hset(vps, 'update_time', time.time())
         ip = status.get('ip', '')
         if ip:
-            self.vps_ip_pool.hincrby(vps, ip)
+            g_ctx.vps_ip_pool.hincrby(vps, ip)
 
 
     def post(self):
@@ -162,9 +172,12 @@ class BrokerService(tornado.web.Application):
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument("-c", "--config", help="specify config file")
     parser.add_argument("-p", "--port", help="specify port", default=8002,
             type=int)
     args = parser.parse_args()
+    g_ctx.init(args.config)
+    g_broker.start()
     service = tornado.httpserver.HTTPServer(BrokerService())
     service.listen(args.port)
     tornado.ioloop.IOLoop.current().start()

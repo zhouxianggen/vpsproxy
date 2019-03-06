@@ -6,6 +6,7 @@ import time
 import json
 import zlib
 import logging
+from logging.handlers import RotatingFileHandler
 from threading import Thread, Lock, Event
 from subprocess import Popen, PIPE
 try:

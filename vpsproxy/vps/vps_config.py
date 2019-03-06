@@ -14,8 +14,12 @@ DIAL_CMD = '/usr/bin/sh %s/bohao.sh' % CWD
 
 # 运行日志存放路径
 LOG_PATH = '%s/log/service.log' % CWD
+if LOG_PATH:
+    _d = os.path.dirname(LOG_PATH)
+    if not os.path.isdir(_d):
+        os.makedirs(_d)
 
 # 远端版本
-REMOTE_VERSION = 'https://raw.githubusercontent.com/zhouxianggen/vpsproxy/master/vpsproxy/.version'
-DEPLOY_SCIRPT = 'https://raw.githubusercontent.com/zhouxianggen/vpsproxy/master/vpsproxy/deploy.sh'
+REMOTE_VERSION = 'https://raw.githubusercontent.com/zhouxianggen/vpsproxy/master/vpsproxy/vps/.version'
+DEPLOY_SCRIPT = 'https://raw.githubusercontent.com/zhouxianggen/vpsproxy/master/vpsproxy/vps/deploy.sh'
 

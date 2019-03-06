@@ -7,7 +7,7 @@ import vps_config
 import vps_utils
 
 
-def open(url):
+def get(url):
     r = requests.get(url)
     if r.status_code != 200:
         print('打开链接[{}]失败'.format(url))
@@ -17,7 +17,7 @@ def open(url):
 
 def main():
     print('获取远端版本')
-    content = open(vps_config.REMOTE_VERSION)
+    content = get(vps_config.REMOTE_VERSION)
     if not content:
         print('获取失败')
         return
@@ -27,15 +27,15 @@ def main():
     print('远端版本[{}], 本地版本[{}]'.format(remote_version, 
             local_version))
     
-    if remote_version > local_version:
+    if remote_version > local_version or True:
         print('更新版本')
         print('下载部署脚本')
-        content = open(vps_config.DEPLOY_SCRIPT)
+        content = get(vps_config.DEPLOY_SCRIPT)
         if not content:
             print('下载失败')
             return
-        deploy_file = '%s/deploy.sh' % CWD
-        open(deploy_file, 'wb').write(script)
+        deploy_file = '%s/tmp.sh' % vps_config.CWD
+        open(deploy_file, 'wb').write(content)
         cmd = "/usr/bin/sh %s" % deploy_file
         process = Popen(cmd, shell=True, stdout=PIPE)
         stdout, stderr = process.communicate()

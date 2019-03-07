@@ -27,7 +27,7 @@ def main():
     print('远端版本[{}], 本地版本[{}]'.format(remote_version, 
             local_version))
     
-    if remote_version > local_version or True:
+    if remote_version > local_version:
         print('更新版本')
         print('下载部署脚本')
         content = get(vps_config.DEPLOY_SCRIPT)

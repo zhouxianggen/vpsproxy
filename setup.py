@@ -11,7 +11,7 @@ setup(
         version = '1.0',
         install_requires = ['requests', 'tornado'], 
         description = 'vps 代理',
-        url = 'https://github.com/zhouxianggen//vpsproxy', 
+        url = 'https://github.com/zhouxianggen/vpsproxy', 
         author = 'zhouxianggen',
         author_email = 'zhouxianggen@gmail.com',
         classifiers = [ 'Programming Language :: Python :: 3.7',],
@@ -19,7 +19,6 @@ setup(
         data_files = [ 
                 ('/conf/supervisor/program/', ['vpsproxy.ini']),], 
         entry_points = { 'console_scripts': [
-                'run_proxy_service = vpsproxy.proxy_service:main',
-                'run_broker_service = vpsproxy.broker_service:main']}   
+                'run_vpsproxy = vpsproxy.proxy_service:main']}   
         )
 

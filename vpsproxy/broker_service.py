@@ -119,7 +119,8 @@ class VpsPostResponseHandler(BaseRequestHandler):
     为了不阻塞主线程，这里只把结果提交给broker（线程），由后者post给请求方
     """
     def post(self):
-        self.log.info('ip=[{}]'.format(self.request.remote_ip))
+        self.log.info('receive response from ip=[{}]'.format(
+                self.request.remote_ip))
         g_broker.push_response(self.request.body)
         self.echo(200)
 
@@ -173,7 +174,7 @@ class BrokerService(tornado.web.Application):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--config", help="specify config file")
-    parser.add_argument("-p", "--port", help="specify port", default=8002,
+    parser.add_argument("-p", "--port", help="specify port", default=8082,
             type=int)
     args = parser.parse_args()
     g_ctx.init(args.config)

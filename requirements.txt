@@ -1,0 +1,8 @@
+requests
+tornado
+redis
+lxml
+git+https://github.com/zhouxianggen/pyobject.git
+git+https://github.com/zhouxianggen/pyutil.git
+git+https://github.com/zhouxianggen/pyredis.git
+git+https://github.com/zhouxianggen/pyrequests.git

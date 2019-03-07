@@ -59,7 +59,7 @@ class Worker(LogObject, Thread):
                 if self.run_interval:
                     time.sleep(self.run_interval)
             except requests.exceptions.RequestException as e:
-                self.log.error('request failed [{}]'.format(e.request.url))
+                self.log.error('request failed [{}]'.format(e.request))
             except Exception as e:
                 self.log.exception(e)
             self.deadline = 0
@@ -205,7 +205,7 @@ class VpsService(LogObject):
                 if w.deadline and w.deadline < time.time():
                     self.log.info('restart open url worker [{}]'.format(w.name))
                     w.exit()
-                    self.open_url_workers[i] = RequestWorker(self)
+                    self.request_workers[i] = RequestWorker(self)
 
             for i,w in enumerate(self.post_response_workers):
                 if w.deadline and w.deadline < time.time():

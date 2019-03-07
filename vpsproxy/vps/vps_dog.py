@@ -41,8 +41,6 @@ def main():
         stdout, stderr = process.communicate()
         print('部署结果：')
         print(stdout)
-        if stdout.find('部署成功') != -1:
-            vps_utils.set_deploy_version(remote_version)
     print('运行结束')
 
 

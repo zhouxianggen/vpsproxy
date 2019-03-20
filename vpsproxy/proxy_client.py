@@ -9,7 +9,9 @@ class ProxyClient(PyObject):
 
 
     def request(self, method, url, **kwargs):
-        kwargs.get('headers', {}).update({'target': url})
+        headers = kwargs.get('headers', {})
+        headers['target'] = url
+        kwargs['headers'] = headers
         return requests.request(method, self.proxy, **kwargs)
 
 

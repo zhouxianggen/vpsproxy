@@ -18,7 +18,8 @@ def foo():
     log.info('start')
     client = ProxyClient('http://114.55.31.211:8081')
     start = time.time()
-    r = client.get(url=url, headers={'User-Agent': 'xman', 'timeout': '3'})
+    #r = client.get(url=url, headers={'User-Agent': 'xman', 'timeout': '3'})
+    r = client.get(url=url)
     log.info('[{}][{}][{}]'.format(r.status_code, r.reason, time.time()-start))
     open('content', 'wb').write(r.content)
 

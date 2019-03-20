@@ -155,10 +155,6 @@ class ProxyRequestHandler(BaseRequestHandler):
             return self.echo(500, reason='timeout')
         status_code, headers, content = fut.result()
         self.set_status(status_code)
-        #for k,v in headers.items():
-        #    if k.lower() in ['transfer-encoding', 'content-encoding']:
-        #        continue
-        #    self.set_header(k, v)
         self.write(content)
 
 

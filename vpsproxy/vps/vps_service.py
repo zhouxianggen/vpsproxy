@@ -109,10 +109,14 @@ class RequestWorker(Worker):
         timeout = float(headers.get('timeout', 5))
         self.deadline = time.time() + timeout
         self.log.info('open url [{}:{}]'.format(method, url))
+        self.log.info('headers: [{}]'.format(headers))
         if method == 'GET':
             r = requests.get(url, headers=headers, timeout=timeout)
         elif method == 'POST':
             r = requests.post(url, headers=headers, data=data, timeout=timeout)
+        else:
+            return
+        self.log.info('response [{}][{}]'.format(r.status_code, r.reason))
         self.context.response_queue.put((context, url, r))
 
 

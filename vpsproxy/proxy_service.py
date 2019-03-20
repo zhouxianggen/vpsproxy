@@ -130,6 +130,9 @@ class ProxyRequestHandler(BaseRequestHandler):
     """ 处理代理请求
     """
     async def get(self, url):
+        self.request.headers.pop('Host', '')
+        self.request.headers.pop('host', '')
+
         url = self.request.headers.pop('target', url)
         self.log.info('receive GET request [{}]'.format(url))
         idx = g_ctx.get_free_slot()
